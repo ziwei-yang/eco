@@ -1,26 +1,29 @@
-# Discount Window
+# Discount Window — Operational Guide  
+## What is it?  
+The Discount Window is the Federal Reserve’s traditional lending facility that provides short-term credit to eligible depository institutions. It offers liquidity when market funding is unavailable or expensive. The facility includes the primary, secondary, and seasonal credit programs.  
 
-## What is it?
-The discount window is the Federal Reserve’s primary direct lending facility for depository institutions. Banks can borrow short-term funds directly from the Fed, usually overnight, by pledging collateral.
+## What does it do?  
+- Supplies liquidity to banks in times of stress, allowing them to meet short-term funding needs.  
+- Helps to alleviate strains in the interbank market and support the smooth functioning of the payments system.  
+- Acts as a safety valve, reducing the stigma of borrowing from the Fed through reforms and outreach.  
 
-## What does it do?
-It provides liquidity to banks to meet short-term funding needs, acting as a safety valve for the banking system. It helps relieve pressure in times of stress or unexpected outflows, supporting the stability of the payments system.
+## How does it work?  
+- Eligible depository institutions pledge acceptable collateral (such as Treasury securities, agency debt, mortgage-backed securities, or high-quality loans) to the Federal Reserve.  
+- They may request overnight or term loans.  
+- The interest rate charged is the discount rate (primary credit rate) set by the Federal Reserve Board, usually above the target federal funds rate.  
+- Upon repayment, collateral is released; if not, the Fed may seize collateral.  
 
-## How does it work?
-Banks request a loan through their regional Federal Reserve Bank, pledging eligible collateral. The loan rate is the discount rate set by the Fed (three discount window programs: primary credit, secondary credit, seasonal credit). Loans are typically overnight but can be extended. Historically there has been a stigma to using the window, but reforms after 2023 aim to reduce stigma.
+## Where to obtain real‑time or incremental data?  
+Data on Discount Window borrowing is not available in real time. The Federal Reserve publishes aggregate usage data in two main sources:  
+- **Federal Reserve H.4.1**: The weekly balance‑sheet release includes the outstanding amount of primary, secondary, and seasonal credit.  
+- **Federal Reserve Statistical Release**: Some historical details are published with a two-year lag, showing daily borrowing amounts by borrower type.  
+- **FRED**: Series such as `DISCBORR` (Borrowings from Federal Reserve Banks, All Commercial Banks) provide weekly totals.  
 
-## Where to obtain data (real-time or incremental)?
-Data on discount window usage is published in aggregate by the Fed:
-- **H.4.1 weekly statistical release:** includes “primary credit”, “secondary credit”, and “seasonal credit” outstanding totals. These series are available on FRED (e.g., `DISCREDIT`, `DISCCRED`, `SEASNCREDIT`).
-- **Federal Reserve annual reports** and special disclosures provide detailed information on discount window lending by type and collateral.
-- There is no real-time feed; the data is updated weekly.
+### Technical details  
+- To fetch aggregated weekly borrowing data, use the FRED API:  
+  `https://api.stlouisfed.org/fred/series/observations?series_id=DISCBORR&api_key=YOUR_API_KEY&file_type=json`  
+- Replace `YOUR_API_KEY` with your FRED key.  
+- Since data is weekly, polling once per week is sufficient. More granular historical data (with borrower-level detail) is released with a lag and must be downloaded manually from the Fed’s website.  
 
-### Technical details
-To obtain historical and current series programmatically, use FRED’s API. For example, the St. Louis Fed FRED API can return weekly data for primary credit outstanding:
-```
-https://api.stlouisfed.org/fred/series/observations?series_id=DISCOUNTWND&api_key=YOUR_API_KEY&file_type=json
-```
-Replace `series_id` with the relevant series and supply your FRED API key. Alternatively, download the data manually from the FRED page.
-
-## Do you need local storage?
-FRED provides full historical data for each series, so if you only need aggregated weekly totals, you can query FRED when needed. If you plan to analyze the data frequently or maintain enriched datasets (e.g., combined with other series), local storage may be beneficial but is not strictly necessary.
+## Is local storage needed for historical data?  
+Yes. Since the published data is incremental and historical releases may be revised or archived, storing observations locally allows you to maintain a continuous time series and conduct long-term analysis of Discount Window usage. 
