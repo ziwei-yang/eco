@@ -1,28 +1,29 @@
-# Standing Repo Facility (SRF)
+# Standing Repo Facility (SRF) — Operational Guide  
+## What is it?  
+The Standing Repo Facility (SRF) is a permanent lending facility created by the Federal Reserve to provide overnight repurchase agreements to primary dealers and eligible depository institutions. It offers liquidity by allowing participants to borrow cash from the Federal Reserve by pledging Treasury securities, agency debt, and agency mortgage‑backed securities as collateral.  
 
-## What is it?
-The Federal Reserve's Standing Repo Facility (SRF) is a standing (always available) open market facility that offers overnight repurchase agreements (repos) to primary dealers and eligible banks. It was launched in July 2021 to provide liquidity backstop in the U.S. Treasury repo market.
+## What does it do?  
+- Serves as a backstop to the overnight funding market, preventing spikes in repo rates.  
+- Provides an elastic source of reserves by enabling institutions to convert high‑quality securities into cash.  
+- Enhances control over short‑term interest rates by capping repo rates at the SRF offering rate.  
 
-## What does it do?
-The SRF serves as a safety valve for money markets. By offering overnight cash loans secured by U.S. Treasury, agency debt, and agency mortgage‑backed securities, it helps cap repo rates and ensure that short‑term interest rates stay within the target range set by the FOMC. It provides liquidity on demand when markets are stressed.
+## How does it work?  
+- Eligible counterparties can request overnight cash loans from the Fed at a fixed offering rate, typically set above the target range for the federal funds rate.  
+- Transactions are secured by pledging Treasury securities, agency debt, or agency MBS as collateral, subject to haircuts.  
+- The facility is standing, meaning it is available every business day without a pre‑announced schedule; demand‑driven.  
+- Loans are settled same‑day and mature the next business day. Participants can roll over as needed.  
 
-## How does it work?
-The facility operates daily at a fixed rate (the SRF rate) with a set maximum amount per counterparty. Participants post eligible securities as collateral and receive cash overnight. If they do not repay, the Fed keeps the collateral. Because it is a standing facility, banks and dealers do not need to wait for scheduled operations; they can request funds any day through the facility.
+## Where to obtain real‑time or incremental data?  
+There is no true real‑time transactional feed for SRF usage. Data availability is incremental:  
+- **Federal Reserve H.4.1 release**: The Fed’s weekly balance‑sheet statement includes aggregate amounts outstanding under “repurchase agreements” and can show SRF usage.  
+- **Federal Reserve Economic Data (FRED)**: Series such as `WORAL` (Repurchase Agreements: Federal Reserve) or similar provide weekly totals.  
+- **New York Fed**: Occasional usage summaries may appear in statements or research posts but are not a continuous feed.  
 
-## Where to obtain data (realtime or incremental)?
-SRF usage data is published by the New York Fed and the Federal Reserve Board:
-- The Fed's weekly **H.4.1** statistical release includes aggregate outstanding repo operations under 'repurchase agreements'. This series is available on FRED (`WORAL`) and is updated weekly.
-- The New York Fed's **Repo Operations** page publishes details of each repo operation, including the offered and accepted amounts. You can retrieve historical operations using the New York Fed Markets API (similar to the Treasury operations API) by specifying `operationType=repo`.
-- There is no push feed; you must poll the data periodically to get new operations. The New York Fed may also provide XLSX downloads of repo operation results.
+### Technical details  
+- To retrieve data from FRED, use the FRED API endpoint:  
+  `https://api.stlouisfed.org/fred/series/observations?series_id=WORAL&api_key=YOUR_API_KEY&file_type=json`  
+- Replace `YOUR_API_KEY` with a valid FRED API key. The response will include dates and values.  
+- Since the data is weekly, poll once per week (e.g., after the Thursday H.4.1 release) to ingest new observations.  
 
-### Technical details
-To download repo operation results programmatically, call the NY Fed Markets API endpoint with appropriate date parameters. For example:
-
-```
-https://markets.newyorkfed.org/api/repo/all/results/details/search.xlsx?startDate=01/01/2025&endDate=01/20/2026
-```
-
-Replace the dates with the desired range. Load the XLSX file using a library such as pandas. Filter rows where `operationType` equals "Standing Repo Facility" if available. Because the API may not distinguish SRF from other repo operations explicitly, you may need to identify SRF operations by date (after July 2021) and collateral type.
-
-## Do you need local storage?
-Since the NY Fed only provides results for a chosen date range, maintaining a local database or CSV is recommended if you need a full historical series. Poll the API daily or weekly, appending new rows to your store. For weekly aggregated totals, FRED's `WORAL` series can be queried directly and does not require local storage.
+## Is local storage needed for historical data?  
+Yes. Because the data from FRED or H.4.1 provides incremental updates (weekly observations), maintaining a local database or time‑series file is recommended to build a continuous historical series. Store each observation with its date and value. This allows you to perform trend analysis and ensures you have a complete history even if earlier data is revised or removed from the API. 
