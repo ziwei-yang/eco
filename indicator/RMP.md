@@ -243,6 +243,9 @@ GROUP BY operation_date
 ORDER BY operation_date;
 ```
 
+## How does RMP work?
+
+RMP operates through scheduled secondary-market purchases of Treasury bills by the New York Fed’s Open Market Trading Desk. The Desk announces purchase operations in advance, specifying the maximum amount, maturity range and timing. On operation days the Desk buys Treasury bills from dealers, injecting reserves into the banking system. After each operation closes, the Desk posts the results, showing the accepted amounts. These predictable, bill-focused purchases are intended to maintain ample reserves and keep short-term rates near the Fed’s target, rather than to signal broader monetary easing.  
 ### Visualization notes
 - RMP is **not daily** — gaps are expected
 - Spikes correspond to Fed operation days
